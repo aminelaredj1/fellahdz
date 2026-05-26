@@ -23,9 +23,8 @@ export async function verifyOtpAndSignUp(formData: FormData) {
   }
 
   const supabaseUrl = getEnvVar('NEXT_PUBLIC_SUPABASE_URL');
-  // Use service role key on the server so we can read the OTP table bypassing RLS
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    ?? getEnvVar('NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  // Use service role key on the server so we can create users/read OTP table bypassing RLS
+  const serviceKey = getEnvVar('SUPABASE_SERVICE_ROLE_KEY');
 
   const cookieStore = await cookies();
 
