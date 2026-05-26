@@ -30,10 +30,7 @@ export default function BuyerDashboard() {
           location,
           phone,
           image_url,
-          created_at,
-          users:farmer_id (
-            raw_user_meta_data
-          )
+          created_at
         `)
         .order('created_at', { ascending: false });
 
