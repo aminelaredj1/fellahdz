@@ -23,12 +23,12 @@ export async function verifyOtpAndSignUp(formData: FormData) {
   }
 
   const supabaseUrl = getEnvVar('NEXT_PUBLIC_SUPABASE_URL');
-  // Use service role key on the server so we can create users/read OTP table bypassing RLS
-  const serviceKey = getEnvVar('SUPABASE_SERVICE_ROLE_KEY');
+  const anonKey = getEnvVar('NEXT_PUBLIC_SUPABASE_ANON_KEY');
 
   const cookieStore = await cookies();
 
-  const supabase = createServerClient(supabaseUrl, serviceKey, {
+  // Create a standard Supabase client using the Anon key
+  const supabase = createServerClient(supabaseUrl, anonKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -76,25 +76,8 @@ export async function verifyOtpAndSignUp(formData: FormData) {
 
     // ──────────────────────────────────────────────────────────────
     // 3. Automatically Log In the user to establish their session
-    //    We use the anon key client to properly set browser cookies.
     // ──────────────────────────────────────────────────────────────
-    const anonKey = getEnvVar('NEXT_PUBLIC_SUPABASE_ANON_KEY');
-    const anonSupabase = createServerClient(supabaseUrl, anonKey, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {}
-        },
-      },
-    });
-
-    await anonSupabase.auth.signInWithPassword({
+    await supabase.auth.signInWithPassword({
       email: `${phone}@agritech.dz`,
       password,
     });
