@@ -1,0 +1,41 @@
+{
+  "Index": {
+    "title": "Fellah DZ",
+    "heroTitle": "La Meilleure Plateforme Agricole en Algérie",
+    "heroSubtitle": "Connectez les agriculteurs et les acheteurs directement, sans intermédiaires.",
+    "iAmFarmer": "Je suis un Agriculteur",
+    "iAmBuyer": "Je suis un Acheteur"
+  },
+  "Farmer": {
+    "dashboardTitle": "Tableau de Bord Agriculteur",
+    "addProduct": "Ajouter un Produit",
+    "productName": "Nom du Produit",
+    "price": "Prix (DA)",
+    "quantity": "Quantité",
+    "location": "Lieu",
+    "phone": "Numéro de Téléphone",
+    "submit": "Ajouter",
+    "myProducts": "Mes Produits",
+    "edit": "Modifier",
+    "delete": "Supprimer"
+  },
+  "Buyer": {
+    "dashboardTitle": "Marché des Produits",
+    "searchPlaceholder": "Rechercher un produit ou un lieu...",
+    "contactFarmer": "Contacter l'Agriculteur"
+  },
+  "Auth": {
+    "title": "Connexion / Inscription",
+    "phoneLabel": "Numéro de Téléphone",
+    "phonePlaceholder": "0555000000",
+    "sendOtp": "Envoyer le code OTP",
+    "otpLabel": "Code de Vérification (OTP)",
+    "otpPlaceholder": "123456",
+    "verifyOtp": "Vérifier",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Entrez un mot de passe",
+    "setPassword": "Confirmer le mot de passe",
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite. Veuillez réessayer."
+  }
+}

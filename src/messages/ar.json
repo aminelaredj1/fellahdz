@@ -1,0 +1,41 @@
+{
+  "Index": {
+    "title": "فلاح DZ",
+    "heroTitle": "أفضل منصة زراعية في الجزائر",
+    "heroSubtitle": "اربط بين الفلاحين والزبائن مباشرة وبدون وسطاء.",
+    "iAmFarmer": "أنا فلاح",
+    "iAmBuyer": "أنا زبون"
+  },
+  "Farmer": {
+    "dashboardTitle": "لوحة تحكم الفلاح",
+    "addProduct": "إضافة منتج جديد",
+    "productName": "اسم المنتج",
+    "price": "السعر (دج)",
+    "quantity": "الكمية",
+    "location": "الموقع",
+    "phone": "رقم الهاتف",
+    "submit": "إضافة",
+    "myProducts": "منتجاتي",
+    "edit": "تعديل",
+    "delete": "حذف"
+  },
+  "Buyer": {
+    "dashboardTitle": "سوق المنتجات",
+    "searchPlaceholder": "ابحث عن منتج أو موقع...",
+    "contactFarmer": "اتصل بالفلاح"
+  },
+  "Auth": {
+    "title": "تسجيل الدخول / إنشاء حساب",
+    "phoneLabel": "رقم الهاتف",
+    "phonePlaceholder": "0555000000",
+    "sendOtp": "أرسل رمز التحقق",
+    "otpLabel": "رمز التحقق (OTP)",
+    "otpPlaceholder": "123456",
+    "verifyOtp": "تحقق",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة مرور قوية",
+    "setPassword": "تأكيد كلمة المرور",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+  }
+}

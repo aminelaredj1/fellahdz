@@ -8,8 +8,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-agri-green: #2D5A27;
+  --color-agri-green-dark: #1F401B;
+  --color-agri-brown: #8B5A2B;
+  --color-agri-brown-light: #A06B36;
+  --font-sans: var(--font-inter);
+  --font-arabic: var(--font-cairo);
 }
 
 @media (prefers-color-scheme: dark) {
