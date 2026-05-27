@@ -188,7 +188,7 @@ export default function BuyerDashboard() {
                           </div>
                           <span className="flex items-center gap-1">
                             {farmerName}
-                            <CheckCircle className="h-4 w-4 text-[#25D366]" title="فلاح موثق" />
+                            <CheckCircle className="h-4 w-4 text-[#25D366]" />
                           </span>
                         </p>
                       </div>
