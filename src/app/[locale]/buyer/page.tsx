@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { Leaf, Search, Phone, MapPin, Loader2 } from 'lucide-react';
+import { Leaf, Search, Phone, MapPin, Loader2, CheckCircle, Share2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -14,8 +14,13 @@ export default function BuyerDashboard() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('الكل');
+  const [selectedWilaya, setSelectedWilaya] = useState('الكل');
 
   const categories = ['الكل', 'خضر', 'فواكه', 'أغنام', 'مواشي', 'لحوم', 'تمور', 'حبوب وبقوليات', 'ألبان وأجبان', 'أخرى'];
+  
+  const wilayas = [
+    'الكل', 'أدرار', 'الشلف', 'الأغواط', 'أم البواقي', 'باتنة', 'بجاية', 'بسكرة', 'بشار', 'البليدة', 'البويرة', 'تمنراست', 'تبسة', 'تلمسان', 'تيارت', 'تيزي وزو', 'الجزائر', 'الجلفة', 'جيجل', 'سطيف', 'سعيدة', 'سكيكدة', 'سيدي بلعباس', 'عنابة', 'قالمة', 'قسنطينة', 'المدية', 'مستغانم', 'المسيلة', 'معسكر', 'ورقلة', 'وهران', 'البيض', 'إليزي', 'برج بوعريريج', 'بومرداس', 'الطارف', 'تندوف', 'تسيمسيلت', 'الوادي', 'خنشلة', 'سوق أهراس', 'تيبازة', 'ميلة', 'عين الدفلى', 'النعامة', 'عين تموشنت', 'غرداية', 'غليزان', 'تيميمون', 'برج باجي مختار', 'أولاد جلال', 'بني عباس', 'إن صالح', 'إن قزام', 'تقرت', 'جانت', 'المغير', 'المنيعة'
+  ];
 
   useEffect(() => {
     fetchProducts();
@@ -41,8 +46,9 @@ export default function BuyerDashboard() {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           p.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'الكل' || p.category === selectedCategory;
+    const matchesWilaya = selectedWilaya === 'الكل' || p.location.includes(selectedWilaya);
     
-    return matchesSearch && matchesCategory;
+    return matchesSearch && matchesCategory && matchesWilaya;
   });
 
   return (
@@ -61,17 +67,34 @@ export default function BuyerDashboard() {
         
         {/* Search & Filter Section */}
         <section className="mb-10 max-w-4xl mx-auto relative mt-4">
-          <div className="relative flex items-center w-full h-14 rounded-2xl focus-within:shadow-lg focus-within:ring-2 focus-within:ring-agri-green bg-white overflow-hidden border border-gray-200 transition-all mb-6 max-w-2xl mx-auto">
-            <div className="grid place-items-center h-full w-14 text-gray-400">
-              <Search className="h-6 w-6" />
+          <div className="flex flex-col md:flex-row gap-4 mb-6 max-w-3xl mx-auto">
+            {/* Search Input */}
+            <div className="relative flex-1 flex items-center h-14 rounded-2xl focus-within:shadow-lg focus-within:ring-2 focus-within:ring-agri-green bg-white overflow-hidden border border-gray-200 transition-all">
+              <div className="grid place-items-center h-full w-14 text-gray-400">
+                <Search className="h-6 w-6" />
+              </div>
+              <input
+                className="peer h-full w-full outline-none text-gray-900 pr-2 font-semibold text-lg"
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('searchPlaceholder')} 
+              />
             </div>
-            <input
-              className="peer h-full w-full outline-none text-gray-900 pr-2 font-semibold text-lg"
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('searchPlaceholder')} 
-            />
+
+            {/* Wilaya Filter */}
+            <div className="relative w-full md:w-64 h-14 rounded-2xl focus-within:shadow-lg focus-within:ring-2 focus-within:ring-agri-green bg-white border border-gray-200 transition-all flex items-center px-4">
+              <MapPin className="h-5 w-5 text-gray-400 ml-2" />
+              <select
+                value={selectedWilaya}
+                onChange={(e) => setSelectedWilaya(e.target.value)}
+                className="w-full h-full bg-transparent outline-none text-gray-900 font-bold"
+              >
+                {wilayas.map((wilaya) => (
+                  <option key={wilaya} value={wilaya}>{wilaya === 'الكل' ? 'كل الولايات' : wilaya}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Categories Horizontal Scroll */}
@@ -163,15 +186,28 @@ export default function BuyerDashboard() {
                           <div className="h-5 w-5 rounded-full bg-agri-green/10 flex items-center justify-center text-agri-green text-xs font-bold">
                             {farmerName.charAt(0)}
                           </div>
-                          <span>{farmerName}</span>
+                          <span className="flex items-center gap-1">
+                            {farmerName}
+                            <CheckCircle className="h-4 w-4 text-[#25D366]" title="فلاح موثق" />
+                          </span>
                         </p>
                       </div>
                     </div>
                     
-                    <div className="p-5 mt-auto border-t border-gray-50 bg-gray-50/50">
+                    <div className="p-5 mt-auto border-t border-gray-50 bg-gray-50/50 flex gap-3">
+                      <button 
+                        onClick={() => {
+                          const productUrl = typeof window !== 'undefined' ? window.location.href : 'https://fellahdz.com';
+                          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`, '_blank');
+                        }}
+                        className="flex-shrink-0 flex items-center justify-center w-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-sm transition-all transform hover:scale-[1.02]"
+                        title="مشاركة على فيسبوك"
+                      >
+                        <Share2 className="h-5 w-5" />
+                      </button>
                       <a 
                         href={`tel:${product.phone}`}
-                        className="w-full flex items-center justify-center gap-3 bg-agri-green hover:bg-agri-green-dark text-white font-bold py-3.5 rounded-2xl shadow-sm transition-all transform hover:scale-[1.02]"
+                        className="flex-1 flex items-center justify-center gap-3 bg-agri-green hover:bg-agri-green-dark text-white font-bold py-3.5 rounded-2xl shadow-sm transition-all transform hover:scale-[1.02]"
                       >
                         <Phone className="h-5 w-5" />
                         اتصال مباشر
