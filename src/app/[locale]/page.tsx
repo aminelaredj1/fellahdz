@@ -31,7 +31,7 @@ export default function Home() {
 
           <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link 
-              href="/auth/signup" 
+              href="/auth/login" 
               className="group relative flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-green-700 hover:bg-green-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>

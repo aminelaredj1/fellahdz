@@ -15,7 +15,7 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('products')
-      .select('id, name, price, quantity, location, phone, image_url, created_at')
+      .select('id, name, price, quantity, location, phone, image_url, created_at, category, storage_state')
       .order('created_at', { ascending: false });
 
     if (error) {

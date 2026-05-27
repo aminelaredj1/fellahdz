@@ -16,12 +16,17 @@ export default function FarmerDashboard() {
   const [user, setUser] = useState<any>(null);
 
   // Form State
+  const [category, setCategory] = useState('');
+  const [storageState, setStorageState] = useState('');
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
   const [location, setLocation] = useState('');
   const [phone, setPhone] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const categories = ['خضر', 'فواكه', 'أغنام', 'مواشي', 'لحوم', 'تمور', 'حبوب وبقوليات', 'ألبان وأجبان', 'أخرى'];
+  const storageStates = ['طازجة', 'فريقو/غرف تبريد', 'مجمدة', 'مصنعة'];
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -103,6 +108,8 @@ export default function FarmerDashboard() {
         .from('products')
         .insert({
           farmer_id: user.id,
+          category,
+          storage_state: storageState,
           name,
           price: parseFloat(price),
           quantity,
@@ -114,6 +121,8 @@ export default function FarmerDashboard() {
       if (insertError) throw insertError;
 
       // Reset form
+      setCategory('');
+      setStorageState('');
       setName('');
       setPrice('');
       setQuantity('');
@@ -174,100 +183,137 @@ export default function FarmerDashboard() {
           
           <form onSubmit={handleAddProduct} className="space-y-4">
             
-            {/* Image Upload */}
-            <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">صورة المنتج</label>
-              <div 
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full h-32 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+            {/* 1. Category Selection */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">تصنيف المنتج</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900 font-bold"
+                required
               >
-                {imageFile ? (
-                  <span className="text-agri-green font-bold text-sm truncate px-4">{imageFile.name}</span>
-                ) : (
-                  <>
-                    <ImageIcon className="h-8 w-8 text-gray-400 mb-2" />
-                    <span className="text-gray-500 text-sm">اضغط لاختيار صورة</span>
-                  </>
-                )}
+                <option value="" disabled>-- اختر التصنيف --</option>
+                {categories.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 2. Detailed Form (Only visible if category is selected) */}
+            <div className={`transition-all duration-500 overflow-hidden ${category ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className="space-y-4 pt-4 border-t border-gray-100">
+                
+                {/* Image Upload */}
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">صورة المنتج</label>
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full h-32 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors"
+                  >
+                    {imageFile ? (
+                      <span className="text-agri-green font-bold text-sm truncate px-4">{imageFile.name}</span>
+                    ) : (
+                      <>
+                        <ImageIcon className="h-8 w-8 text-gray-400 mb-2" />
+                        <span className="text-gray-500 text-sm">اضغط لاختيار صورة</span>
+                      </>
+                    )}
+                  </div>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t('productName')} (حسب الصنف المختار)</label>
+                  <input 
+                    type="text" 
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
+                    placeholder="مثال: دقلة نور / لحم خروف / بطاطا" 
+                    required={!!category} 
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">الكمية (الوزن أو العدد)</label>
+                  <input 
+                    type="text" 
+                    value={quantity}
+                    onChange={e => setQuantity(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
+                    placeholder="مثال: 100 كلغ / 50 رأس" 
+                    required={!!category} 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">النوعية وحالة الحفظ</label>
+                  <select
+                    value={storageState}
+                    onChange={(e) => setStorageState(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900"
+                    required={!!category}
+                  >
+                    <option value="" disabled>-- اختر حالة الحفظ --</option>
+                    {storageStates.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t('price')}</label>
+                  <input 
+                    type="number" 
+                    value={price}
+                    onChange={e => setPrice(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
+                    placeholder="مثال: 150 (دج)" 
+                    required={!!category} 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t('location')} / الولاية</label>
+                  <input 
+                    type="text" 
+                    value={location}
+                    onChange={e => setLocation(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
+                    placeholder="مثال: البليدة" 
+                    required={!!category} 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t('phone')}</label>
+                  <input 
+                    type="tel" 
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
+                    placeholder="0555000000" 
+                    dir="ltr"
+                    required={!!category} 
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  disabled={submitting}
+                  className="w-full mt-6 bg-agri-green hover:bg-agri-green-dark text-white font-bold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+                >
+                  {submitting && <Loader2 className="h-5 w-5 animate-spin" />}
+                  {submitting ? 'جاري الإضافة...' : t('submit')}
+                </button>
               </div>
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                ref={fileInputRef}
-                onChange={handleImageChange}
-              />
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t('productName')}</label>
-              <input 
-                type="text" 
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
-                placeholder="مثال: طماطم" 
-                required 
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t('price')}</label>
-              <input 
-                type="number" 
-                value={price}
-                onChange={e => setPrice(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
-                placeholder="150" 
-                required 
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t('quantity')}</label>
-              <input 
-                type="text" 
-                value={quantity}
-                onChange={e => setQuantity(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
-                placeholder="100 كلغ" 
-                required 
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t('location')}</label>
-              <input 
-                type="text" 
-                value={location}
-                onChange={e => setLocation(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
-                placeholder="البليدة" 
-                required 
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t('phone')}</label>
-              <input 
-                type="tel" 
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900" 
-                placeholder="0555000000" 
-                dir="ltr"
-                required 
-              />
-            </div>
-
-            <button 
-              type="submit" 
-              disabled={submitting}
-              className="w-full mt-6 bg-agri-green hover:bg-agri-green-dark text-white font-bold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
-            >
-              {submitting && <Loader2 className="h-5 w-5 animate-spin" />}
-              {submitting ? 'جاري الإضافة...' : t('submit')}
-            </button>
           </form>
         </section>
 
@@ -295,6 +341,18 @@ export default function FarmerDashboard() {
                       <h3 className="text-xl font-bold text-gray-900">{product.name}</h3>
                       <span className="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full">{product.quantity}</span>
                     </div>
+                    {product.category && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <span className="bg-blue-50 text-blue-700 text-xs font-bold px-2 py-1 rounded-md border border-blue-100">
+                          {product.category}
+                        </span>
+                        {product.storage_state && (
+                          <span className="bg-purple-50 text-purple-700 text-xs font-bold px-2 py-1 rounded-md border border-purple-100">
+                            {product.storage_state}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <p className="text-gray-600 font-semibold mb-1">{product.price} دج</p>
                     <p className="text-gray-500 text-sm mb-4">{product.location} • {product.phone}</p>
                   </div>

@@ -13,6 +13,9 @@ export default function BuyerDashboard() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('الكل');
+
+  const categories = ['الكل', 'خضر', 'فواكه', 'أغنام', 'مواشي', 'لحوم', 'تمور', 'حبوب وبقوليات', 'ألبان وأجبان', 'أخرى'];
 
   useEffect(() => {
     fetchProducts();
@@ -34,10 +37,13 @@ export default function BuyerDashboard() {
     }
   };
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.location.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          p.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'الكل' || p.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f4f7f6] font-cairo">
@@ -53,9 +59,9 @@ export default function BuyerDashboard() {
 
       <main className="flex-1 p-6 max-w-6xl mx-auto w-full">
         
-        {/* Search Section */}
-        <section className="mb-10 max-w-2xl mx-auto relative mt-4">
-          <div className="relative flex items-center w-full h-14 rounded-2xl focus-within:shadow-lg focus-within:ring-2 focus-within:ring-agri-green bg-white overflow-hidden border border-gray-200 transition-all">
+        {/* Search & Filter Section */}
+        <section className="mb-10 max-w-4xl mx-auto relative mt-4">
+          <div className="relative flex items-center w-full h-14 rounded-2xl focus-within:shadow-lg focus-within:ring-2 focus-within:ring-agri-green bg-white overflow-hidden border border-gray-200 transition-all mb-6 max-w-2xl mx-auto">
             <div className="grid place-items-center h-full w-14 text-gray-400">
               <Search className="h-6 w-6" />
             </div>
@@ -66,6 +72,23 @@ export default function BuyerDashboard() {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('searchPlaceholder')} 
             />
+          </div>
+
+          {/* Categories Horizontal Scroll */}
+          <div className="flex overflow-x-auto hide-scrollbar gap-3 pb-4 px-2 snap-x">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`shrink-0 snap-start px-6 py-2.5 rounded-full font-bold text-sm transition-all ${
+                  selectedCategory === category 
+                    ? 'bg-agri-green text-white shadow-md' 
+                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-green-50 hover:text-agri-green hover:border-green-200'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
         </section>
 
@@ -86,10 +109,7 @@ export default function BuyerDashboard() {
                 // Extract farmer name from joined user metadata if available
                 const farmerName = product.users?.raw_user_meta_data?.username || 'فلاح';
                 
-                // Format WhatsApp link
-                const formattedPhone = product.phone.startsWith('0') 
-                  ? '+213' + product.phone.substring(1) 
-                  : product.phone;
+                // We don't need formatted phone for standard call
 
                 return (
                   <div key={product.id} className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -120,8 +140,21 @@ export default function BuyerDashboard() {
                           {product.quantity}
                         </span>
                       </div>
+
+                      {product.category && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <span className="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-lg border border-blue-100">
+                            {product.category}
+                          </span>
+                          {product.storage_state && (
+                            <span className="bg-purple-50 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-lg border border-purple-100">
+                              {product.storage_state}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       
-                      <div className="space-y-3 mt-4">
+                      <div className="space-y-3 mt-2">
                         <p className="flex items-center gap-3 text-gray-700 font-medium">
                           <MapPin className="h-5 w-5 text-gray-400"/>
                           <span>{product.location}</span>
@@ -137,13 +170,11 @@ export default function BuyerDashboard() {
                     
                     <div className="p-5 mt-auto border-t border-gray-50 bg-gray-50/50">
                       <a 
-                        href={`https://wa.me/${formattedPhone.replace('+', '')}?text=مرحباً، أنا مهتم بمنتج ${product.name} المعروض في منصة فلاح.`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 rounded-2xl shadow-sm transition-all transform hover:scale-[1.02]"
+                        href={`tel:${product.phone}`}
+                        className="w-full flex items-center justify-center gap-3 bg-agri-green hover:bg-agri-green-dark text-white font-bold py-3.5 rounded-2xl shadow-sm transition-all transform hover:scale-[1.02]"
                       >
                         <Phone className="h-5 w-5" />
-                        تواصل عبر الواتساب
+                        اتصال مباشر
                       </a>
                     </div>
                   </div>
