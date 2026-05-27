@@ -1,69 +1,250 @@
-import { useTranslations } from 'next-intl';
+"use client";
+
+import { useState } from 'react';
 import { Link } from '@/i18n/routing';
-import { Leaf, Tractor, Store, Truck } from 'lucide-react';
 
 export default function Home() {
-  const t = useTranslations('Index');
+  const [activeRole, setActiveRole] = useState<string | null>(null);
+
+  const stats = [
+    { id: 1, value: '+15,000', label: 'فلاح مسجل', color: 'text-emerald-700' },
+    { id: 2, value: '58', label: 'ولاية مغطاة', color: 'text-red-600' },
+    { id: 3, value: '+50k', label: 'طلبية ناجحة', color: 'text-emerald-700' },
+    { id: 4, value: '100%', label: 'اتصال مباشر', color: 'text-slate-800' },
+  ];
+
+  const steps = [
+    {
+      id: 1,
+      title: 'أضف منتجاتك',
+      desc: 'الفلاح يضيف المحاصيل مع تحديد السعر والكمية.',
+      icon: (
+        <svg className="w-10 h-10 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+        </svg>
+      ),
+      borderColor: 'border-emerald-200',
+      bgColor: 'bg-emerald-50',
+    },
+    {
+      id: 2,
+      title: 'الزبون يطلب',
+      desc: 'المشتري يتصفح ويتواصل مباشرة بدون وسيط.',
+      icon: (
+        <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+      borderColor: 'border-red-200',
+      bgColor: 'bg-red-50',
+    },
+    {
+      id: 3,
+      title: 'النقل السريع',
+      desc: 'الناقل يستلم الطلبية ويوصلها بأمان.',
+      icon: (
+        <svg className="w-10 h-10 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+      ),
+      borderColor: 'border-slate-200',
+      bgColor: 'bg-slate-50',
+    },
+  ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f4f7f6]">
-      {/* Navbar placeholder */}
-      <header className="w-full p-6 flex justify-between items-center bg-white shadow-sm">
-        <div className="flex items-center gap-2 text-green-700 font-bold text-2xl">
-          <Leaf className="h-8 w-8" />
-          <span>{t('title')}</span>
-        </div>
-        <div className="flex gap-4">
-          <Link href="/" locale="ar" className="text-gray-600 hover:text-green-700 font-semibold">عربي</Link>
-          <Link href="/" locale="fr" className="text-gray-600 hover:text-green-700 font-semibold">Français</Link>
-        </div>
-      </header>
+    <div dir="rtl" className="min-h-screen bg-gray-50 font-cairo text-slate-800 selection:bg-emerald-200 selection:text-emerald-900 overflow-x-hidden">
+      
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-emerald-600/10 blur-[120px]" />
+        <div className="absolute top-[40%] -left-[10%] w-[40%] h-[40%] rounded-full bg-red-600/5 blur-[100px]" />
+      </div>
 
-      {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <div className="max-w-3xl space-y-8">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">
-            {t('heroTitle')}
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto">
-            {t('heroSubtitle')}
-          </p>
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo */}
+            <div className="flex items-center gap-2 cursor-pointer">
+              <svg className="w-8 h-8 text-emerald-700" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+              <span className="text-2xl font-black tracking-tighter text-slate-900">
+                فلاح <span className="text-red-600">DZ</span>
+              </span>
+            </div>
 
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 flex-wrap">
-            <Link 
-              href="/auth/login" 
-              className="group relative flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-green-700 hover:bg-green-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
-              <Tractor className="h-6 w-6 z-10" />
-              <span className="text-lg font-bold z-10">{t('iAmFarmer')}</span>
-            </Link>
-
-            <Link 
-              href="/buyer" 
-              className="group relative flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
-              <Store className="h-6 w-6 z-10" />
-              <span className="text-lg font-bold z-10">{t('iAmBuyer')}</span>
-            </Link>
-
-            <Link 
-              href="/transport" 
-              className="group relative flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
-              <Truck className="h-6 w-6 z-10" />
-              <span className="text-lg font-bold z-10">ناقل السلع</span>
-            </Link>
+            {/* Quick Links & Lang */}
+            <div className="hidden md:flex items-center gap-8 font-semibold">
+              <a href="#how-it-works" className="text-slate-600 hover:text-emerald-700 transition-colors">كيف تعمل المنصة؟</a>
+              <div className="h-6 w-px bg-gray-200" />
+              <div className="flex items-center gap-3 text-sm">
+                <span className="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors">Français</span>
+                <span className="cursor-pointer text-emerald-700 font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">عربي</span>
+              </div>
+            </div>
           </div>
         </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="relative z-10 w-full">
+        
+        {/* Hero Section */}
+        <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+          <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-tight mb-6">
+            أفضل منصة زراعية <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-l from-emerald-700 to-emerald-500">
+              في الجزائر
+            </span>
+          </h1>
+          <p className="text-lg md:text-2xl text-slate-600 max-w-3xl mx-auto mb-14 font-medium leading-relaxed">
+            اربط بين الفلاحين والزبائن مباشرة وبدون وسطاء. منصة متكاملة لدعم الاقتصاد الزراعي الوطني.
+          </p>
+
+          {/* Role Selection Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            
+            {/* Farmer Button */}
+            <Link href="/auth/login" passHref>
+              <button
+                onClick={() => setActiveRole('farmer')}
+                className={`w-full relative group flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all duration-300 border-2 ${
+                  activeRole === 'farmer' 
+                  ? 'border-emerald-600 bg-emerald-50 shadow-emerald-600/20 shadow-xl scale-[1.02]' 
+                  : 'border-white bg-white shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-emerald-100'
+                }`}
+              >
+                <div className={`p-5 rounded-full transition-colors duration-300 ${activeRole === 'farmer' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 group-hover:bg-emerald-100'}`}>
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                </div>
+                <span className={`text-2xl font-extrabold ${activeRole === 'farmer' ? 'text-emerald-800' : 'text-slate-800'}`}>
+                  أنا فلاح
+                </span>
+                {activeRole === 'farmer' && (
+                  <div className="absolute inset-0 rounded-3xl ring-4 ring-emerald-600/30 animate-pulse" />
+                )}
+              </button>
+            </Link>
+
+            {/* Buyer Button */}
+            <Link href="/buyer" passHref>
+              <button
+                onClick={() => setActiveRole('buyer')}
+                className={`w-full relative group flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all duration-300 border-2 ${
+                  activeRole === 'buyer' 
+                  ? 'border-red-600 bg-red-50 shadow-red-600/20 shadow-xl scale-[1.02]' 
+                  : 'border-white bg-white shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-red-100'
+                }`}
+              >
+                <div className={`p-5 rounded-full transition-colors duration-300 ${activeRole === 'buyer' ? 'bg-red-600 text-white' : 'bg-red-50 text-red-600 group-hover:bg-red-100'}`}>
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </div>
+                <span className={`text-2xl font-extrabold ${activeRole === 'buyer' ? 'text-red-800' : 'text-slate-800'}`}>
+                  أنا زبون
+                </span>
+                {activeRole === 'buyer' && (
+                  <div className="absolute inset-0 rounded-3xl ring-4 ring-red-600/30 animate-pulse" />
+                )}
+              </button>
+            </Link>
+
+            {/* Transporter Button */}
+            <Link href="/transport" passHref>
+              <button
+                onClick={() => setActiveRole('transporter')}
+                className={`w-full relative group flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all duration-300 border-2 ${
+                  activeRole === 'transporter' 
+                  ? 'border-slate-800 bg-slate-50 shadow-slate-800/20 shadow-xl scale-[1.02]' 
+                  : 'border-white bg-white shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-slate-200'
+                }`}
+              >
+                <div className={`p-5 rounded-full transition-colors duration-300 ${activeRole === 'transporter' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-800 group-hover:bg-slate-200'}`}>
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                  </svg>
+                </div>
+                <span className={`text-2xl font-extrabold ${activeRole === 'transporter' ? 'text-slate-900' : 'text-slate-800'}`}>
+                  ناقل السلع
+                </span>
+                {activeRole === 'transporter' && (
+                  <div className="absolute inset-0 rounded-3xl ring-4 ring-slate-800/30 animate-pulse" />
+                )}
+              </button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Live Statistics Section */}
+        <section className="py-16 bg-white border-y border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-x-reverse divide-gray-100">
+              {stats.map((stat) => (
+                <div key={stat.id} className="text-center">
+                  <div className={`text-4xl md:text-5xl font-black mb-2 ${stat.color} tracking-tight`}>
+                    {stat.value}
+                  </div>
+                  <div className="text-slate-500 font-semibold text-sm md:text-base">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* "How it Works" Section */}
+        <section id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">آلية عمل المنصة</h2>
+            <div className="w-24 h-1 bg-red-600 mx-auto rounded-full" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {steps.map((step) => (
+              <div 
+                key={step.id} 
+                className={`bg-white rounded-3xl p-8 border ${step.borderColor} shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden`}
+              >
+                <div className={`w-20 h-20 rounded-2xl ${step.bgColor} flex items-center justify-center mb-6`}>
+                  {step.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-3">{step.title}</h3>
+                <p className="text-slate-600 leading-relaxed font-medium">
+                  {step.desc}
+                </p>
+                <div className="absolute -bottom-6 -left-6 text-9xl font-black text-gray-50/50 pointer-events-none select-none z-0">
+                  {step.id}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
       </main>
 
-      {/* Simple Footer */}
-      <footer className="py-8 text-center text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} {t('title')}. All rights reserved.
+      {/* Footer */}
+      <footer className="bg-slate-900 py-12 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+          <div className="flex items-center gap-2 mb-6 opacity-80">
+             <svg className="w-6 h-6 text-emerald-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+             </svg>
+             <span className="text-xl font-black tracking-tighter text-white">
+                فلاح <span className="text-red-500">DZ</span>
+             </span>
+          </div>
+          <p className="text-slate-400 text-sm font-medium">
+            &copy; {new Date().getFullYear()} أفضل منصة زراعية في الجزائر. جميع الحقوق محفوظة.
+          </p>
+        </div>
       </footer>
+
     </div>
   );
 }
