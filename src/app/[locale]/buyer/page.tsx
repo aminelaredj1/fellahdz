@@ -20,21 +20,12 @@ export default function BuyerDashboard() {
 
   const fetchProducts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          id,
-          name,
-          price,
-          quantity,
-          location,
-          phone,
-          image_url,
-          created_at
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      const res = await fetch('/api/products');
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to fetch products');
+      }
+      const data = await res.json();
       setProducts(data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
