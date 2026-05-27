@@ -110,22 +110,21 @@ export default function Home() {
             <Link href="/auth/login" passHref>
               <button
                 onClick={() => setActiveRole('farmer')}
-                className={`w-full relative group flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all duration-300 border-2 ${
+                className={`w-full h-full relative group flex flex-col items-center justify-center gap-4 p-10 rounded-[2.5rem] transition-all duration-500 border-2 ${
                   activeRole === 'farmer' 
-                  ? 'border-emerald-600 bg-emerald-50 shadow-emerald-600/20 shadow-xl scale-[1.02]' 
-                  : 'border-white bg-white shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-emerald-100'
+                  ? 'border-emerald-500 bg-gradient-to-b from-white to-emerald-50 shadow-emerald-600/20 shadow-2xl scale-[1.02]' 
+                  : 'border-white bg-white shadow-xl hover:shadow-2xl hover:-translate-y-2 hover:border-emerald-100'
                 }`}
               >
-                <div className={`p-5 rounded-full transition-colors duration-300 ${activeRole === 'farmer' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 group-hover:bg-emerald-100'}`}>
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                  </svg>
+                <div className="text-7xl drop-shadow-xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 mb-2">
+                  🧑‍🌾
                 </div>
-                <span className={`text-2xl font-extrabold ${activeRole === 'farmer' ? 'text-emerald-800' : 'text-slate-800'}`}>
+                <span className={`text-3xl font-black tracking-tight transition-colors duration-300 ${activeRole === 'farmer' ? 'text-emerald-800' : 'text-slate-800'}`}>
                   أنا فلاح
                 </span>
+                <p className="text-sm text-slate-500 font-medium px-4">بيع محاصيلك مباشرة للزبائن</p>
                 {activeRole === 'farmer' && (
-                  <div className="absolute inset-0 rounded-3xl ring-4 ring-emerald-600/30 animate-pulse" />
+                  <div className="absolute inset-0 rounded-[2.5rem] ring-4 ring-emerald-500/30 animate-pulse pointer-events-none" />
                 )}
               </button>
             </Link>
@@ -134,22 +133,21 @@ export default function Home() {
             <Link href="/buyer" passHref>
               <button
                 onClick={() => setActiveRole('buyer')}
-                className={`w-full relative group flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all duration-300 border-2 ${
+                className={`w-full h-full relative group flex flex-col items-center justify-center gap-4 p-10 rounded-[2.5rem] transition-all duration-500 border-2 ${
                   activeRole === 'buyer' 
-                  ? 'border-red-600 bg-red-50 shadow-red-600/20 shadow-xl scale-[1.02]' 
-                  : 'border-white bg-white shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-red-100'
+                  ? 'border-red-500 bg-gradient-to-b from-white to-red-50 shadow-red-600/20 shadow-2xl scale-[1.02]' 
+                  : 'border-white bg-white shadow-xl hover:shadow-2xl hover:-translate-y-2 hover:border-red-100'
                 }`}
               >
-                <div className={`p-5 rounded-full transition-colors duration-300 ${activeRole === 'buyer' ? 'bg-red-600 text-white' : 'bg-red-50 text-red-600 group-hover:bg-red-100'}`}>
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
+                <div className="text-7xl drop-shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 mb-2">
+                  🛒
                 </div>
-                <span className={`text-2xl font-extrabold ${activeRole === 'buyer' ? 'text-red-800' : 'text-slate-800'}`}>
+                <span className={`text-3xl font-black tracking-tight transition-colors duration-300 ${activeRole === 'buyer' ? 'text-red-800' : 'text-slate-800'}`}>
                   أنا زبون
                 </span>
+                <p className="text-sm text-slate-500 font-medium px-4">اطلب منتجات طازجة بأفضل سعر</p>
                 {activeRole === 'buyer' && (
-                  <div className="absolute inset-0 rounded-3xl ring-4 ring-red-600/30 animate-pulse" />
+                  <div className="absolute inset-0 rounded-[2.5rem] ring-4 ring-red-500/30 animate-pulse pointer-events-none" />
                 )}
               </button>
             </Link>
@@ -158,22 +156,21 @@ export default function Home() {
             <Link href="/transport" passHref>
               <button
                 onClick={() => setActiveRole('transporter')}
-                className={`w-full relative group flex flex-col items-center justify-center gap-4 p-8 rounded-3xl transition-all duration-300 border-2 ${
+                className={`w-full h-full relative group flex flex-col items-center justify-center gap-4 p-10 rounded-[2.5rem] transition-all duration-500 border-2 ${
                   activeRole === 'transporter' 
-                  ? 'border-slate-800 bg-slate-50 shadow-slate-800/20 shadow-xl scale-[1.02]' 
-                  : 'border-white bg-white shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-slate-200'
+                  ? 'border-slate-800 bg-gradient-to-b from-white to-slate-50 shadow-slate-800/20 shadow-2xl scale-[1.02]' 
+                  : 'border-white bg-white shadow-xl hover:shadow-2xl hover:-translate-y-2 hover:border-slate-200'
                 }`}
               >
-                <div className={`p-5 rounded-full transition-colors duration-300 ${activeRole === 'transporter' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-800 group-hover:bg-slate-200'}`}>
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                  </svg>
+                <div className="text-7xl drop-shadow-xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 mb-2">
+                  🚚
                 </div>
-                <span className={`text-2xl font-extrabold ${activeRole === 'transporter' ? 'text-slate-900' : 'text-slate-800'}`}>
+                <span className={`text-3xl font-black tracking-tight transition-colors duration-300 ${activeRole === 'transporter' ? 'text-slate-900' : 'text-slate-800'}`}>
                   ناقل السلع
                 </span>
+                <p className="text-sm text-slate-500 font-medium px-4">انقل السلع واربح من التوصيل</p>
                 {activeRole === 'transporter' && (
-                  <div className="absolute inset-0 rounded-3xl ring-4 ring-slate-800/30 animate-pulse" />
+                  <div className="absolute inset-0 rounded-[2.5rem] ring-4 ring-slate-800/30 animate-pulse pointer-events-none" />
                 )}
               </button>
             </Link>

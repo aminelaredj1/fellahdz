@@ -203,7 +203,7 @@ export default function BuyerDashboard() {
                           <MapPin className="h-5 w-5 text-gray-400"/>
                           <span>{product.location}</span>
                         </p>
-                        <p className="flex items-center gap-3 text-gray-700 font-medium">
+                        <div className="flex items-center gap-3 text-gray-700 font-medium">
                           <div className="h-5 w-5 rounded-full bg-agri-green/10 flex items-center justify-center text-agri-green text-xs font-bold">
                             {farmerName.charAt(0)}
                           </div>
@@ -211,7 +211,7 @@ export default function BuyerDashboard() {
                             {farmerName}
                             <CheckCircle className="h-4 w-4 text-[#25D366]" />
                           </span>
-                        </p>
+                        </div>
                       </div>
                     </div>
                     
