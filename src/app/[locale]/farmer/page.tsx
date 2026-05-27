@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { Leaf, Plus, Edit2, Trash2, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Leaf, Plus, Trash2, Image as ImageIcon, Loader2, CheckCircle2, Pencil, X, Save } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -14,6 +14,12 @@ export default function FarmerDashboard() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [user, setUser] = useState<any>(null);
+
+  // Edit Modal State
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [editPrice, setEditPrice] = useState('');
+  const [editQuantity, setEditQuantity] = useState('');
+  const [editSaving, setEditSaving] = useState(false);
 
   // Form State
   const [category, setCategory] = useState('');
@@ -143,7 +149,7 @@ export default function FarmerDashboard() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('هل أنت متأكد أنك تريد حذف هذا المنتج؟')) return;
+    if (!confirm('هل تأكدت أن السلعة بيعت أو تريد حذف هذا المنتج؟ سيختفي العرض فوراً من الصفحة العامة.')) return;
     
     try {
       const { error } = await supabase
@@ -160,8 +166,86 @@ export default function FarmerDashboard() {
     }
   };
 
+  const handleOpenEdit = (product: any) => {
+    setEditingProduct(product);
+    setEditPrice(String(product.price));
+    setEditQuantity(product.quantity);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingProduct) return;
+    setEditSaving(true);
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ price: parseFloat(editPrice), quantity: editQuantity })
+        .eq('id', editingProduct.id);
+
+      if (error) throw error;
+
+      setProducts(products.map(p =>
+        p.id === editingProduct.id
+          ? { ...p, price: parseFloat(editPrice), quantity: editQuantity }
+          : p
+      ));
+      setEditingProduct(null);
+    } catch (error: any) {
+      alert('حدث خطأ أثناء التحديث: ' + error.message);
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-[#f4f7f6] font-cairo">
+
+      {/* ── Edit Modal ── */}
+      {editingProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative">
+            <button
+              onClick={() => setEditingProduct(null)}
+              className="absolute top-4 left-4 text-gray-400 hover:text-gray-700 transition-colors"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <h3 className="text-xl font-extrabold text-gray-800 mb-1">تعديل المنتج</h3>
+            <p className="text-sm text-gray-500 mb-6">{editingProduct.name}</p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">السعر الجديد (دج)</label>
+                <input
+                  type="number"
+                  value={editPrice}
+                  onChange={e => setEditPrice(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900 text-lg font-bold"
+                  placeholder="مثال: 200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">الكمية الجديدة</label>
+                <input
+                  type="text"
+                  value={editQuantity}
+                  onChange={e => setEditQuantity(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-agri-green outline-none text-gray-900 text-lg font-bold"
+                  placeholder="مثال: 50 كلغ"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleSaveEdit}
+              disabled={editSaving}
+              className="mt-6 w-full bg-agri-green hover:bg-agri-green-dark text-white font-bold py-3.5 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {editSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
+              {editSaving ? 'جاري الحفظ...' : 'حفظ التعديلات'}
+            </button>
+          </div>
+        </div>
+      )}
       <header className="w-full p-6 flex justify-between items-center bg-white shadow-sm border-b border-gray-100">
         <Link href="/" className="flex items-center gap-2 text-agri-green font-bold text-2xl">
           <Leaf className="h-8 w-8" />
@@ -356,18 +440,18 @@ export default function FarmerDashboard() {
                     <p className="text-gray-600 font-semibold mb-1">{product.price} دج</p>
                     <p className="text-gray-500 text-sm mb-4">{product.location} • {product.phone}</p>
                   </div>
-                  <div className="flex gap-2 border-t border-gray-100 p-2 mt-auto bg-gray-50">
+                  <div className="flex gap-2 border-t border-gray-100 p-3 mt-auto bg-gray-50">
                     <button 
-                      onClick={() => alert('ميزة التعديل ستتوفر قريباً')}
-                      className="flex-1 flex justify-center items-center gap-2 text-sm text-agri-brown hover:text-agri-brown-dark font-bold py-2 rounded-lg hover:bg-orange-100 transition-colors"
+                      onClick={() => handleOpenEdit(product)}
+                      className="flex-1 flex justify-center items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-bold py-2.5 rounded-xl hover:bg-blue-50 transition-colors border border-blue-100"
                     >
-                      <Edit2 className="h-4 w-4" /> {t('edit')}
+                      <Pencil className="h-4 w-4" /> تعديل السعر/الكمية
                     </button>
                     <button 
                       onClick={() => handleDelete(product.id)}
-                      className="flex-1 flex justify-center items-center gap-2 text-sm text-red-600 hover:text-red-700 font-bold py-2 rounded-lg hover:bg-red-100 transition-colors"
+                      className="flex-1 flex justify-center items-center gap-2 text-sm text-emerald-700 hover:text-emerald-800 font-bold py-2.5 rounded-xl hover:bg-emerald-50 transition-colors border border-emerald-200 bg-emerald-50"
                     >
-                      <Trash2 className="h-4 w-4" /> {t('delete')}
+                      <CheckCircle2 className="h-4 w-4" /> تم البيع بنجاح ✓
                     </button>
                   </div>
                 </div>
