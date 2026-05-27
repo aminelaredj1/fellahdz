@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { Leaf, Search, Phone, MapPin, Loader2, CheckCircle, Share2 } from 'lucide-react';
+import { Leaf, Search, Phone, MapPin, Loader2, CheckCircle, Share2, Truck } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -11,6 +11,7 @@ export default function BuyerDashboard() {
   const tIndex = useTranslations('Index');
 
   const [products, setProducts] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('الكل');
@@ -24,6 +25,7 @@ export default function BuyerDashboard() {
 
   useEffect(() => {
     fetchProducts();
+    fetchDrivers();
   }, []);
 
   const fetchProducts = async () => {
@@ -41,6 +43,25 @@ export default function BuyerDashboard() {
       setLoading(false);
     }
   };
+
+  const fetchDrivers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('drivers')
+        .select('id, full_name, phone, wilaya, vehicle_type')
+        .order('created_at', { ascending: false });
+      if (!error) setDrivers(data || []);
+    } catch (err) {
+      console.error('Error fetching drivers:', err);
+    }
+  };
+
+  // Returns drivers whose wilaya matches the product location
+  const getDriversForProduct = (productLocation: string) =>
+    drivers.filter(d =>
+      productLocation && d.wilaya &&
+      productLocation.includes(d.wilaya)
+    );
 
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -194,6 +215,7 @@ export default function BuyerDashboard() {
                       </div>
                     </div>
                     
+                    {/* Contact buttons */}
                     <div className="p-5 mt-auto border-t border-gray-50 bg-gray-50/50 flex gap-3">
                       <button 
                         onClick={() => {
@@ -201,7 +223,6 @@ export default function BuyerDashboard() {
                           window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`, '_blank');
                         }}
                         className="flex-shrink-0 flex items-center justify-center w-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-sm transition-all transform hover:scale-[1.02]"
-                        title="مشاركة على فيسبوك"
                       >
                         <Share2 className="h-5 w-5" />
                       </button>
@@ -213,6 +234,48 @@ export default function BuyerDashboard() {
                         اتصال مباشر
                       </a>
                     </div>
+
+                    {/* Drivers Section */}
+                    {(() => {
+                      const nearbyDrivers = getDriversForProduct(product.location);
+                      return (
+                        <div className="px-5 pb-5 border-t border-gray-100">
+                          <div className="flex items-center gap-2 py-3 mb-2">
+                            <Truck className="h-4 w-4 text-blue-500" />
+                            <span className="text-sm font-bold text-gray-700">
+                              هل تحتاج إلى نقل لهذه السلعة؟ سائقون في <span className="text-blue-600">{product.location}</span>:
+                            </span>
+                          </div>
+
+                          {nearbyDrivers.length === 0 ? (
+                            <p className="text-xs text-gray-400 italic py-2">
+                              لا يوجد ناقلون مسجلون في هذه الولاية حالياً.
+                            </p>
+                          ) : (
+                            <div className="space-y-2">
+                              {nearbyDrivers.slice(0, 3).map(driver => (
+                                <div
+                                  key={driver.id}
+                                  className="flex items-center justify-between gap-3 bg-blue-50 rounded-xl px-3 py-2.5 border border-blue-100"
+                                >
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-bold text-gray-800 text-sm truncate">{driver.full_name}</p>
+                                    <p className="text-blue-600 text-xs truncate">{driver.vehicle_type}</p>
+                                  </div>
+                                  <a
+                                    href={`tel:${driver.phone}`}
+                                    className="shrink-0 flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors"
+                                  >
+                                    <Phone className="h-3.5 w-3.5" />
+                                    اتصل بالناقل
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
               })}
