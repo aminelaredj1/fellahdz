@@ -37,7 +37,7 @@ export default async function RootLayout({
       dir={dir}
       className={`${inter.variable} ${cairo.variable} h-full antialiased`}
     >
-      <body className={`min-h-full flex flex-col ${isArabic ? 'font-cairo' : 'font-inter'}`}>
+      <body className={`min-h-full flex flex-col font-cairo`}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>

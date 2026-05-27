@@ -67,7 +67,7 @@ export default function LoginPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">رمز سري</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">الرمز السري</label>
               <div className="relative">
                 <Lock className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input 
@@ -92,8 +92,11 @@ export default function LoginPage() {
           
           <div className="mt-6 text-center">
             <span className="text-gray-600">ليس لديك حساب؟ </span>
-            <button onClick={() => router.push('/auth/signup')} className="text-agri-green font-bold hover:underline">
-              إنشاء حساب
+            <button 
+              onClick={() => router.push('/auth/signup')} 
+              className="text-agri-green font-bold underline hover:text-agri-green-dark transition-colors"
+            >
+              افتح حساب جديد هنا
             </button>
           </div>
         </div>
