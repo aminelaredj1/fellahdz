@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { Leaf, Tractor, Store } from 'lucide-react';
+import { Leaf, Tractor, Store, Truck } from 'lucide-react';
 
 export default function Home() {
   const t = useTranslations('Index');
@@ -29,7 +29,7 @@ export default function Home() {
             {t('heroSubtitle')}
           </p>
 
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 flex-wrap">
             <Link 
               href="/auth/login" 
               className="group relative flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-green-700 hover:bg-green-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
@@ -46,6 +46,15 @@ export default function Home() {
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
               <Store className="h-6 w-6 z-10" />
               <span className="text-lg font-bold z-10">{t('iAmBuyer')}</span>
+            </Link>
+
+            <Link 
+              href="/transport" 
+              className="group relative flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+              <Truck className="h-6 w-6 z-10" />
+              <span className="text-lg font-bold z-10">ناقل السلع</span>
             </Link>
           </div>
         </div>
